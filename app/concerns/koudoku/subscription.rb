@@ -94,12 +94,13 @@ module Koudoku::Subscription
 
               finalize_new_customer!(customer.id, plan.price)
               Rails.logger.debug('Koudoku::Subscription - creating new subscription')
-              customer.update_subscription(plan: plan.stripe_id,
+              subscription = customer.update_subscription(plan: plan.stripe_id,
                                            quantity: quantity,
                                            prorate: Koudoku.prorate,
                                            metadata: metadata,
                                            trial_end: Figaro.env.add_testing_trial_time == 'true' ? Time.zone.now.advance(seconds: 5).to_i : :now,
               )
+              # self.current_period_ends_at = Time.zone.at(subscription.current_period_end)
 
             rescue Stripe::CardError => card_error
               Rails.logger.info("Credit card failed: #{card_error}")

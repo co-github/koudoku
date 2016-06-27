@@ -180,10 +180,6 @@ module Koudoku
     end
 
     def after_new_subscription_message
-      controller = ::ApplicationController.new
-      controller.respond_to?(:new_subscription_notice_message) ?
-          controller.try(:new_subscription_notice_message) :
-          I18n.t('koudoku.confirmations.subscription_upgraded')
     end
   end
 end
