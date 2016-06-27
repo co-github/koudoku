@@ -1,5 +1,7 @@
 module Koudoku
   class SubscriptionsController < ApplicationController
+    include Proposable
+
     before_filter :load_owner
     before_filter :show_existing_subscription, only: [:index, :new, :create], unless: :no_owner?
     before_filter :load_subscription, only: [:show, :cancel, :edit, :update]
@@ -108,6 +110,8 @@ module Koudoku
       else
         @subscription = ::Subscription.new
         @subscription.plan = ::Plan.find(params[:plan])
+
+        @proposal = decorated_proposal
       end
     end
 
