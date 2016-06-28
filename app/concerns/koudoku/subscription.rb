@@ -100,8 +100,6 @@ module Koudoku::Subscription
                                            metadata: metadata,
                                            trial_end: Figaro.env.add_testing_trial_time == 'true' ? Time.zone.now.advance(seconds: 5).to_i : :now,
               )
-              # self.current_period_ends_at = Time.zone.at(subscription.current_period_end)
-
             rescue Stripe::CardError => card_error
               Rails.logger.info("Credit card failed: #{card_error}")
               errors[:base] << card_error.message
@@ -112,6 +110,7 @@ module Koudoku::Subscription
             # store the customer id.
             self.stripe_id = customer.id
             self.last_four = customer.cards.retrieve(customer.default_card).last4
+            self.stripe_object = Sequel.pg_json(subscription.as_json)
 
             finalize_new_subscription!
             finalize_upgrade!
